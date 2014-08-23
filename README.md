@@ -20,10 +20,22 @@ Just require this module or map this module to the `net` module with [Browserify
 var express = require('express');
 var netApi = require('net-browserify/api');
 
-var app = express();
+// Create a server
+var server = require('http').createServer();
 
-app.use(netApi);
+// Create our app
+var app = express();
+server.addListener('request', app);
+
+app.use(netApi(server));
+
+// Start the server
+server.listen(app.get('port'), function() {
+	console.log('Server listening on port ' + app.get('port'));
+});
 ```
+
+NB: the API takes `server` as an argument since [`ws`](https://www.npmjs.org/package/ws) requires it.
 
 License
 -------

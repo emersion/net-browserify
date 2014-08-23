@@ -5,6 +5,27 @@ var http = require('http');
 
 var debug = util.debuglog('net');
 
+var proxy = {
+	hostname: window.location.hostname,
+	port: window.location.port
+};
+function getProxy() {
+	return proxy;
+}
+function getProxyHost() {
+	var host = getProxy().hostname;
+	if (getProxy().port) {
+		host += ':'+getProxy().port;
+	}
+	return host;
+}
+exports.setProxy = function (options) {
+	options = options || {};
+
+	proxy.hostname = options.hostname;
+	proxy.port = options.port;
+};
+
 exports.createServer = function () {
 	throw new Error('Cannot create server in a browser');
 };
@@ -254,8 +275,8 @@ Socket.prototype.connect = function(options, cb) {
 	self._host = options.host;
 
 	var req = http.request({
-		hostname: window.location.hostname,
-		port: window.location.port,
+		hostname: getProxy().hostname,
+		port: getProxy().port,
 		path: '/api/vm/net/connect',
 		method: 'POST'
 	}, function (res) {
@@ -304,7 +325,7 @@ Socket.prototype._connectWebSocket = function (token, cb) {
 		return;
 	}
 
-	this._ws = new WebSocket('ws://'+window.location.host+'/api/vm/net/socket?token='+token);
+	this._ws = new WebSocket('ws://'+getProxyHost()+'/api/vm/net/socket?token='+token);
 	this._handleWebsocket();
 
 	if (cb) {

@@ -53,6 +53,20 @@ server.listen(app.get('port'), function() {
 
 > The API takes `server` as an argument since [`ws`](https://www.npmjs.org/package/ws) requires it.
 
+You can also specify some options:
+```js
+app.use(netApi(server, {
+	allowOrigin: '*', // Allow access from any origin
+	to: [ // Restrict destination
+		{ host: 'example.org', port: 42 }, // Restrict to example.org:42
+		{ host: 'example.org' }, // Restrict to example.org, allow any port
+		{ port: 42 }, // Restrict to port 42 only, allow any host
+		{ host: 'bad.com', blacklist: true } // Blacklist bad.com
+		// And so on...
+	]
+}));
+```
+
 License
 -------
 

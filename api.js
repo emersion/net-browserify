@@ -7,15 +7,72 @@ function generateToken() {
 	return crypto.randomBytes(32).toString('hex');
 }
 
-module.exports = function (server) {
+function checkTo(allowed, requested) {
+	if (!(allowed instanceof Array)) {
+		allowed = [allowed];
+	}
+
+	// For each rule
+	for (var i = 0; i < allowed.length; i++) {
+		var to = allowed[i];
+
+		if ((to.host == requested.host || !to.host) && (to.port == requested.port || !to.port)) {
+			if (to.blacklist) { // This item is blacklisted
+				return false;
+			} else { // Otheriwse, it's whitelisted
+				return true;
+			}
+		}
+	}
+
+	// No rule found, access denied
+	return false;
+}
+
+module.exports = function (server, options) {
+	options = options || {};
+
 	var app = express();
 
 	var sockets = {};
 
+	if (options.allowOrigin) {
+		app.use(function (req, res, next) {
+			var allowOrigin = options.allowOrigin;
+			if (typeof options.allowOrigin != 'string') {
+				allowOrigin = (options.allowOrigin) ? '*' : '';
+			}
+			if (allowOrigin) {
+				res.header('Access-Control-Allow-Origin', allowOrigin);
+			}
+			next();
+		});
+	}
+
 	app.post('/api/vm/net/connect', function (req, res) {
+		var host = req.body.host,
+			port = req.body.port;
+
+		if (!host || !port) {
+			res.status(400).send({
+				code: 400,
+				error: 'No host and port specified'
+			});
+			return;
+		}
+		if (options.to) {
+			if (!checkTo(options.to, { host: host, port: port })) {
+				res.status(403).send({
+					code: 403,
+					error: 'Destination not allowed'
+				});
+				return;
+			}
+		}
+
 		var socket = net.connect({
-			host: req.body.host,
-			port: req.body.port
+			host: host,
+			port: port
 		}, function (err) {
 			if (err) {
 				res.status(500).send({

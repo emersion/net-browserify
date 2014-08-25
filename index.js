@@ -285,10 +285,18 @@ Socket.prototype.connect = function(options, cb) {
 			json += buf;
 		});
 		res.on('end', function () {
-			var data = JSON.parse(json);
+			var data = null;
+			try {
+				data = JSON.parse(json);
+			} catch (e) {
+				data = {
+					code: res.statusCode,
+					error: json
+				};
+			}
 
 			if (data.error) {
-				self.emit('error', data.error);
+				self.emit('error', 'Cannot open TCP connection ['+res.statusCode+']: '+data.error);
 				self.destroy();
 				return;
 			}

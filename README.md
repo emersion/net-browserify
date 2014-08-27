@@ -14,10 +14,8 @@ How to use
 
 Just require this module or map this module to the `net` module with [Browserify](https://github.com/substack/node-browserify).
 ```
-$ npm install git+https://github.com/emersion/net-browserify.git
+$ npm install net-browserify
 ```
-
-> This module is not available as an NPM package yet, but will be soon! ;)
 
 You can set a custom proxy address if you want to:
 ```js

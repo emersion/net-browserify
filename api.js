@@ -37,16 +37,30 @@ module.exports = function (server, options) {
 	var sockets = {};
 
 	if (options.allowOrigin) {
-		app.use(function (req, res, next) {
-			var allowOrigin = options.allowOrigin;
-			if (typeof options.allowOrigin != 'string') {
-				allowOrigin = (options.allowOrigin) ? '*' : '';
-			}
-			if (allowOrigin) {
+		var allowOrigin = options.allowOrigin;
+		if (typeof options.allowOrigin != 'string') {
+			allowOrigin = (options.allowOrigin === true) ? '*' : '';
+		}
+
+		if (allowOrigin) {
+			// Set Access-Control headers (CORS)
+			app.use(function (req, res, next) {
+				if (req.path.indexOf('/api/vm/net/') !== 0) {
+					next();
+					return;
+				}
+
 				res.header('Access-Control-Allow-Origin', allowOrigin);
-			}
-			next();
-		});
+
+				if (req.method.toUpperCase() == 'OPTIONS') { // Preflighted requests
+					res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+					res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+					res.header('Access-Control-Max-Age', 1728000); // Access-Control headers cached for 20 days
+				}
+				next();
+			});
+		}
 	}
 
 	app.post('/api/vm/net/connect', function (req, res) {

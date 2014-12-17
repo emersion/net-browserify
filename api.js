@@ -117,6 +117,9 @@ module.exports = function (server, options) {
 				remote: remote
 			});
 		});
+		socket.on('error', function (err) {
+			console.warn('WARN: Socket error', err);
+		});
 	});
 
 	var wss = expressWs(app, server);
@@ -125,7 +128,7 @@ module.exports = function (server, options) {
 		var token = req.query.token;
 
 		if (!sockets[token]) {
-			console.warn('Unknown TCP connection with token "'+token+'"');
+			console.warn('WARN: Unknown TCP connection with token "'+token+'"');
 			ws.close();
 			return;
 		}

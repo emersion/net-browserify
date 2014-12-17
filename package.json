@@ -1,8 +1,11 @@
 {
   "name": "net-browserify",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A port of the net module for the browser.",
-  "author": "Emersion <contact@emersion.fr>",
+  "author": {
+    "name": "Emersion",
+    "email": "contact@emersion.fr"
+  },
   "license": "MIT",
   "main": "index.js",
   "repository": {
@@ -17,5 +20,17 @@
   "bugs": {
     "url": "https://github.com/emersion/net-browserify/issues"
   },
-  "homepage": "https://github.com/emersion/net-browserify"
+  "homepage": "https://github.com/emersion/net-browserify",
+  "readme": "net-browserify\n==============\n\n`net` module for browserify, with a websocket server proxy.\n\nSupported methods:\n* `net.connect(options, cb)`\n* `net.isIP(input)`, `net.isIPv4(input)`, `net.isIPv6(input)`\n\nHow to use\n----------\n\n### For the client\n\nJust require this module or map this module to the `net` module with [Browserify](https://github.com/substack/node-browserify).\n```\n$ npm install net-browserify\n```\n\nYou can set a custom proxy address if you want to:\n```js\nvar net = require('net');\n\n// Optionaly, set a custom proxy address\nnet.setProxy({\n\thostname: 'example.org',\n\tport: 42\n});\n```\n\n### For the server\n\n```js\nvar express = require('express');\nvar netApi = require('net-browserify/api');\n\n// Create a server\nvar server = require('http').createServer();\n\n// Create our app\nvar app = express();\nserver.addListener('request', app);\n\napp.use(netApi(server));\n\n// Start the server\nserver.listen(app.get('port'), function() {\n\tconsole.log('Server listening on port ' + app.get('port'));\n});\n```\n\n> The API takes `server` as an argument since [`ws`](https://www.npmjs.org/package/ws) requires it.\n\nYou can also specify some options:\n```js\napp.use(netApi(server, {\n\tallowOrigin: '*', // Allow access from any origin\n\tto: [ // Restrict destination\n\t\t{ host: 'example.org', port: 42 }, // Restrict to example.org:42\n\t\t{ host: 'example.org' }, // Restrict to example.org, allow any port\n\t\t{ port: 42 }, // Restrict to port 42 only, allow any host\n\t\t{ host: 'bad.com', blacklist: true } // Blacklist bad.com\n\t\t// And so on...\n\t]\n}));\n```\n\nLicense\n-------\n\nThe MIT license.\n",
+  "readmeFilename": "README.md",
+  "gitHead": "24f082fb47950e68b1af5788f38b4294fe6bfae4",
+  "_id": "net-browserify@0.1.4",
+  "scripts": {},
+  "_shasum": "c245ef93e24f1c5d822de9b85b180793fbd9bed7",
+  "_from": "net-browserify@*",
+  "dependencies": {
+    "body-parser": "^1.10.0",
+    "express": "^4.10.6",
+    "express-ws": "^0.2.1"
+  }
 }

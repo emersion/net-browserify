@@ -1,7 +1,8 @@
-var express = require('express');
-var expressWs = require('express-ws');
 var net = require('net');
 var crypto = require('crypto');
+var express = require('express');
+var expressWs = require('express-ws');
+var bodyParser = require('body-parser');
 
 function generateToken() {
 	return crypto.randomBytes(32).toString('hex');
@@ -33,6 +34,7 @@ module.exports = function (server, options) {
 	options = options || {};
 
 	var app = express();
+	var jsonParser = bodyParser.json();
 
 	var sockets = {};
 
@@ -63,7 +65,7 @@ module.exports = function (server, options) {
 		}
 	}
 
-	app.post('/api/vm/net/connect', function (req, res) {
+	app.post('/api/vm/net/connect', jsonParser, function (req, res) {
 		var host = req.body.host,
 			port = req.body.port;
 

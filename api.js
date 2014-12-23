@@ -118,7 +118,11 @@ module.exports = function (server, options) {
 			});
 		});
 		socket.on('error', function (err) {
-			console.warn('WARN: Socket error', err);
+			res.status(502).send({
+				code: 502,
+				error: 'Socket error: '+err.code,
+				details: err
+			});
 		});
 	});
 

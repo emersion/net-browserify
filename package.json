@@ -1,6 +1,6 @@
 {
   "name": "net-browserify",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A port of the net module for the browser.",
   "author": {
     "name": "Emersion",

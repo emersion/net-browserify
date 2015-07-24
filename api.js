@@ -30,7 +30,7 @@ function checkTo(allowed, requested) {
 	return false;
 }
 
-module.exports = function (server, options) {
+module.exports = function (server, options, connectionListener) {
 	options = options || {};
 
 	var app = express();
@@ -124,6 +124,9 @@ module.exports = function (server, options) {
 				details: err
 			});
 		});
+		if (connectionListener) {
+			connectionListener(socket)
+		}
 	});
 
 	var wss = expressWs(app, server);

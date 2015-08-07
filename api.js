@@ -1,4 +1,5 @@
 var net = require('net');
+var http = require('http');
 var crypto = require('crypto');
 var express = require('express');
 var expressWs = require('express-ws');
@@ -30,11 +31,18 @@ function checkTo(allowed, requested) {
 	return false;
 }
 
-module.exports = function (server, options, connectionListener) {
+module.exports = function (options, connectionListener) {
 	options = options || {};
 
 	var app = express();
 	var jsonParser = bodyParser.json();
+
+	var server;
+	if (options.server) {
+		server = options.server;
+	} else {
+		server = http.createServer();
+	}
 
 	var sockets = {};
 
@@ -163,6 +171,14 @@ module.exports = function (server, options, connectionListener) {
 			socket.end();
 			console.log('Websocket connection closed ('+token+')');
 		});
+	});
+
+	app.on('mount', function (parentApp) {
+		// @see https://github.com/strongloop/express/blob/master/lib/application.js#L615
+		parentApp.listen = function listen() {
+			server.addListener('request', this);
+			return server.listen.apply(server, arguments);
+		};
 	});
 
 	return app;

@@ -7,6 +7,8 @@ Supported methods:
 * `net.connect(options, cb)`
 * `net.isIP(input)`, `net.isIPv4(input)`, `net.isIPv6(input)`
 
+Examples are available in `examples/`.
+
 How to use
 ----------
 
@@ -22,9 +24,20 @@ You can set a custom proxy address if you want to:
 var net = require('net');
 
 // Optionaly, set a custom proxy address
+// (defaults to the current host & port)
 net.setProxy({
 	hostname: 'example.org',
 	port: 42
+});
+
+// Use the net module like on a server
+var socket = net.connect({
+	host: 'google.com',
+	port: 80
+});
+
+socket.on('connect', function () {
+	console.log('Connected to google.com!');
 });
 ```
 
@@ -32,24 +45,18 @@ net.setProxy({
 
 ```js
 var express = require('express');
-var netApi = require('net-browserify/api');
-
-// Create a server
-var server = require('http').createServer();
+var netApi = require('net-browserify');
 
 // Create our app
 var app = express();
-server.addListener('request', app);
 
 app.use(netApi(server));
 
 // Start the server
-server.listen(app.get('port'), function() {
-	console.log('Server listening on port ' + app.get('port'));
+var server = app.listen(3000, function() {
+	console.log('Server listening on port ' + server.address().port);
 });
 ```
-
-> The API takes `server` as an argument since [`ws`](https://www.npmjs.org/package/ws) requires it.
 
 You can also specify some options:
 ```js

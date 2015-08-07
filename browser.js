@@ -356,7 +356,7 @@ Socket.prototype._handleWebsocket = function () {
 	});
 	this._ws.addEventListener('error', function (e) {
 		// `e` doesn't contain anything useful (https://developer.mozilla.org/en/docs/WebSockets/Writing_WebSocket_client_applications#Connection_errors)
-		//console.warn('TCP error', e);
+		console.warn('TCP error', e);
 		self.emit('error', 'An error occured with the WebSocket');
 	});
 	this._ws.addEventListener('message', function (e) {

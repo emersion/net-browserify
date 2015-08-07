@@ -50,7 +50,7 @@ var netApi = require('net-browserify');
 // Create our app
 var app = express();
 
-app.use(netApi(server));
+app.use(netApi());
 
 // Start the server
 var server = app.listen(3000, function() {

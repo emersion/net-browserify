@@ -60,7 +60,7 @@ var server = app.listen(3000, function() {
 
 You can also specify some options:
 ```js
-app.use(netApi(server, {
+app.use(netApi({
 	allowOrigin: '*', // Allow access from any origin
 	to: [ // Restrict destination
 		{ host: 'example.org', port: 42 }, // Restrict to example.org:42

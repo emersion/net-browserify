@@ -6,6 +6,7 @@ var http = require('http');
 var debug = util.debuglog('net');
 
 var proxy = {
+	protocol: (window.location.protocol == 'https:') ? 'wss' : 'ws',
 	hostname: window.location.hostname,
 	port: window.location.port
 };
@@ -19,9 +20,13 @@ function getProxyHost() {
 	}
 	return host;
 }
+function getProxyOrigin() {
+	return getProxy().protocol + '://' + getProxyHost();
+}
 exports.setProxy = function (options) {
 	options = options || {};
 
+	proxy.protocol = options.protocol;
 	proxy.hostname = options.hostname;
 	proxy.port = options.port;
 };
@@ -333,7 +338,7 @@ Socket.prototype._connectWebSocket = function (token, cb) {
 		return;
 	}
 
-	this._ws = new WebSocket('ws://'+getProxyHost()+'/api/vm/net/socket?token='+token);
+	this._ws = new WebSocket(getProxyOrigin()+'/api/vm/net/socket?token='+token);
 	this._handleWebsocket();
 
 	if (cb) {

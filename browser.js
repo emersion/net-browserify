@@ -27,9 +27,15 @@ function getProxyOrigin() {
 exports.setProxy = function (options) {
 	options = options || {};
 
-	proxy.protocol = options.protocol;
-	proxy.hostname = options.hostname;
-	proxy.port = options.port;
+	if (proxy.protocol) {
+            proxy.protocol = options.protocol;
+        }
+        if (proxy.hostname) {
+    	    proxy.hostname = options.hostname;
+        }
+        if (proxy.port) {
+    	    proxy.port = options.port;
+        }
         if (options.url) {
             proxy.url = options.url;
         }

@@ -36,6 +36,7 @@ module.exports = function (options, connectionListener) {
 
 	var app = express();
 	var jsonParser = bodyParser.json();
+        var urlRool = options.urlRoot || '/api/vm/net';
 
 	var server;
 	if (options.server) {
@@ -55,7 +56,7 @@ module.exports = function (options, connectionListener) {
 		if (allowOrigin) {
 			// Set Access-Control headers (CORS)
 			app.use(function (req, res, next) {
-				if (req.path.indexOf('/api/vm/net/') !== 0) {
+				if (req.path.indexOf(urlRoot) !== 0) {
 					next();
 					return;
 				}
@@ -73,7 +74,7 @@ module.exports = function (options, connectionListener) {
 		}
 	}
 
-	app.post('/api/vm/net/connect', jsonParser, function (req, res) {
+	app.post(urlRoot + '/connect', jsonParser, function (req, res) {
 		var host = req.body.host,
 			port = req.body.port;
 
@@ -139,7 +140,7 @@ module.exports = function (options, connectionListener) {
 
 	var wss = expressWs(app, server);
 
-	app.ws('/api/vm/net/socket', function (ws, req) {
+	app.ws(urlRoot + '/socket', function (ws, req) {
 		var token = req.query.token;
 
 		if (!sockets[token]) {

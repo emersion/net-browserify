@@ -36,7 +36,7 @@ module.exports = function (options, connectionListener) {
 
 	var app = express();
 	var jsonParser = bodyParser.json();
-        var urlRoot = options.urlRoot || '/api/vm/net';
+	var urlRoot = options.urlRoot || '/api/vm/net';
 
 	var server;
 	if (options.server) {

@@ -127,6 +127,10 @@ module.exports = function (options, connectionListener) {
 			});
 		});
 		socket.on('error', function (err) {
+			if (res.finished) {
+				console.log("Socket error after response closed: "+err);
+				return;
+			}
 			res.status(502).send({
 				code: 502,
 				error: 'Socket error: '+err.code,

@@ -204,7 +204,7 @@ Socket.prototype.destroy = function(exception) {
 		return;
 	}
 
-	self._connecting = false;
+	this._connecting = false;
 
 	this.readable = this.writable = false;
 

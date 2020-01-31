@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/emersion/net-browserify",
   "dependencies": {
-    "body-parser": "^1.10.0",
-    "express": "^4.10.6",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
     "express-ws": "^4.0.0"
   }
 }

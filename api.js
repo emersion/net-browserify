@@ -158,9 +158,9 @@ module.exports = function (options, connectionListener) {
 
 		console.log('Forwarding socket with token '+token);
 
-		ws.on('message', function (chunk, flags) {
-			socket.write(flags.buffer || chunk, 'binary', function () {
-				//console.log('Sent: ', (flags.buffer || chunk).toString());
+		ws.on('message', function (data) {
+			socket.write(data, 'binary', function () {
+				//console.log('Sent: ', data.toString());
 			});
 		});
 		socket.on('data', function (chunk) {

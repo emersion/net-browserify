@@ -34,6 +34,10 @@ function checkTo(allowed, requested) {
 module.exports = function (options, connectionListener) {
 	options = options || {};
 
+	const myLog = options.log
+		? console.log
+		: function() {}
+
 	var app = express();
 	var jsonParser = bodyParser.json();
 	var urlRoot = options.urlRoot || '/api/vm/net';
@@ -118,7 +122,7 @@ module.exports = function (options, connectionListener) {
 				}
 			});
 
-			console.log('Connected to '+req.body.host+':'+req.body.port+' ('+token+')');
+			myLog('Connected to '+req.body.host+':'+req.body.port+' ('+token+')');
 
 			var remote = socket.address();
 			res.send({
@@ -128,7 +132,7 @@ module.exports = function (options, connectionListener) {
 		});
 		socket.on('error', function (err) {
 			if (res.finished) {
-				console.log("Socket error after response closed: "+err);
+				myLog("Socket error after response closed: "+err);
 				return;
 			}
 			res.status(502).send({
@@ -156,25 +160,25 @@ module.exports = function (options, connectionListener) {
 		var socket = sockets[token];
 		//delete sockets[token];
 
-		console.log('Forwarding socket with token '+token);
+		myLog('Forwarding socket with token '+token);
 
 		ws.on('message', function (data) {
 			socket.write(data, 'binary', function () {
-				//console.log('Sent: ', data.toString());
+				//myLog('Sent: ', data.toString());
 			});
 		});
 		socket.on('data', function (chunk) {
-			//console.log('Received: ', chunk.toString());
+			//myLog('Received: ', chunk.toString());
 			// Providing a callback is important, otherwise errors can be thrown
 			ws.send(chunk, { binary: true }, function (err) {});
 		});
 		socket.on('end', function () {
-			console.log('TCP connection closed by remote ('+token+')');
+			myLog('TCP connection closed by remote ('+token+')');
 			ws.close();
 		});
 		ws.on('close', function () {
 			socket.end();
-			console.log('Websocket connection closed ('+token+')');
+			myLog('Websocket connection closed ('+token+')');
 		});
 	});
 
